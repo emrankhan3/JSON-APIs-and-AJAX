@@ -47,3 +47,156 @@ Here's a review of what each piece is doing. The JavaScript XMLHttpRequest objec
 
 Update the code to create and send a GET request to the freeCodeCamp Cat Photo API. Then click the Get Message button. Your AJAX function will replace the The message will go here text with the raw JSON output from the API.
 
+## Get JSON with the JavaScript fetch method
+Another way to request external data is to use the JavaScript fetch() method. It is equivalent to XMLHttpRequest, but the syntax is considered easier to understand.
+
+Here is the code for making a GET request to /json/cats.json
+
+
+fetch('/json/cats.json')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('message').innerHTML = JSON.stringify(data);
+  })
+
+Take a look at each piece of this code.
+
+The first line is the one that makes the request. So, fetch(URL) makes a GET request to the URL specified. The method returns a Promise.
+
+After a Promise is returned, if the request was successful, the then method is executed, which takes the response and converts it to JSON format.
+
+The then method also returns a Promise, which is handled by the next then method. The argument in the second then is the JSON object you are looking for!
+
+Now, it selects the element that will receive the data by using document.getElementById(). Then it modifies the HTML code of the element by inserting a string created from the JSON object returned from the request.
+
+Update the code to create and send a GET request to the freeCodeCamp Cat Photo API. But this time, using the fetch method instead of XMLHttpRequest.
+
+## Access the JSON Data from an API
+In the previous challenge, you saw how to get JSON data from the freeCodeCamp Cat Photo API.
+
+Now you'll take a closer look at the returned data to better understand the JSON format. Recall some notation in JavaScript:
+
+[ ] -> Square brackets represent an array.
+{ } -> Curly brackets represent an object.
+" " -> Double quotes represent a string. They are also used for key names in JSON.
+Understanding the structure of the data that an API returns is important because it influences how you retrieve the values you need.
+
+On the right, click the Get Message button to load the freeCodeCamp Cat Photo API JSON into the HTML.
+
+The first and last character you see in the JSON data are square brackets [ ]. This means that the returned data is an array. The second character in the JSON data is a curly { bracket, which starts an object. Looking closely, you can see that there are three separate objects. The JSON data is an array of three objects, where each object contains information about a cat photo.
+
+You learned earlier that objects contain "key-value pairs" that are separated by commas. In the Cat Photo example, the first object has "id":0 where id is a key and 0 is its corresponding value. Similarly, there are keys for imageLink, altText, and codeNames. Each cat photo object has these same keys, but with different values.
+
+Another interesting "key-value pair" in the first object is "codeNames":["Juggernaut","Mrs. Wallace","ButterCup"]. Here codeNames is the key and its value is an array of three strings. It's possible to have arrays of objects as well as a key with an array as a value.
+
+Remember how to access data in arrays and objects. Arrays use bracket notation to access a specific index of an item. Objects use either bracket or dot notation to access the value of a given property. Here's an example that prints the altText property of the first cat photo - note that the parsed JSON data in the editor is saved in a variable called json:
+
+console.log(json[0].altText);
+The console would display the string A white cat wearing a green helmet shaped melon on its head..
+
+For the cat with the id of 2, print to the console the second value in the codeNames array. You should use bracket and dot notation on the object (which is saved in the variable json) to access the value.
+
+## Convert JSON Data to HTML
+Now that you're getting data from a JSON API, you can display it in the HTML.
+
+You can use a forEach method to loop through the data since the cat photo objects are held in an array. As you get to each item, you can modify the HTML elements.
+
+First, declare an html variable with let html = "";.
+
+Then, loop through the JSON, adding HTML to the variable that wraps the key names in strong tags, followed by the value. When the loop is finished, you render it.
+
+Here's the code that does this:
+
+let html = "";
+json.forEach(function(val) {
+  const keys = Object.keys(val);
+  html += "<div class = 'cat'>";
+  keys.forEach(function(key) {
+    html += "<strong>" + key + "</strong>: " + val[key] + "<br>";
+  });
+  html += "</div><br>";
+});
+Note: For this challenge, you need to add new HTML elements to the page, so you cannot rely on textContent. Instead, you need to use innerHTML, which can make a site vulnerable to cross-site scripting attacks.
+
+Add a forEach method to loop over the JSON data and create the HTML elements to display it.
+
+Here is some example JSON:
+
+[
+  {
+    "id":0,
+      "imageLink":"https://s3.amazonaws.com/freecodecamp/funny-cat.jpg",
+      "altText":"A white cat wearing a green helmet shaped melon on its head. ",
+      "codeNames":[ "Juggernaut", "Mrs. Wallace", "Buttercup"
+    ]
+  }
+]
+
+## Render Images from Data Sources
+The last few challenges showed that each object in the JSON array contains an imageLink key with a value that is the URL of a cat's image.
+
+When you're looping through these objects, you can use this imageLink property to display this image in an img element.
+
+Here's the code that does this:
+
+html += "<img src = '" + val.imageLink + "' " + "alt='" + val.altText + "'>";
+Add code to use the imageLink and altText properties in an img tag.
+## Pre-filter JSON to Get the Data You Need
+If you don't want to render every cat photo you get from the freeCodeCamp Cat Photo API, you can pre-filter the JSON before looping through it.
+
+Given that the JSON data is stored in an array, you can use the filter method to filter out the cat whose id key has a value of 1.
+
+Here's the code to do this:
+
+json = json.filter(function(val) {
+  return (val.id !== 1);
+});
+Add code to filter the json data to remove the cat with the id value of 1.
+
+
+## Get Geolocation Data to Find A User's GPS Coordinates
+Another cool thing you can do is access your user's current location. Every browser has a built in navigator that can give you this information.
+
+The navigator will get the user's current longitude and latitude.
+
+You will see a prompt to allow or block this site from knowing your current location. The challenge can be completed either way, as long as the code is correct.
+
+By selecting allow, you will see the text on the output phone change to your latitude and longitude.
+
+Here's code that does this:
+
+if (navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(function(position) {
+    document.getElementById('data').innerHTML="latitude: " + position.coords.latitude + "<br>longitude: " + position.coords.longitude;
+  });
+}
+First, it checks if the navigator.geolocation object exists. If it does, the getCurrentPosition method on that object is called, which initiates an asynchronous request for the user's position. If the request is successful, the callback function in the method runs. This function accesses the position object's values for latitude and longitude using dot notation and updates the HTML.
+
+Add the example code inside the script tags to check a user's current location and insert it into the HTML.
+
+## Post Data with the JavaScript XMLHttpRequest Method
+In the previous examples, you received data from an external resource. You can also send data to an external resource, as long as that resource supports AJAX requests and you know the URL.
+
+JavaScript's XMLHttpRequest method is also used to post data to a server. Here's an example:
+
+const xhr = new XMLHttpRequest();
+xhr.open('POST', url, true);
+xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+xhr.onreadystatechange = function () {
+  if (xhr.readyState === 4 && xhr.status === 201){
+    const serverResponse = JSON.parse(xhr.response);
+    document.getElementsByClassName('message')[0].textContent = serverResponse.userName + serverResponse.suffix;
+  }
+};
+const body = JSON.stringify({ userName: userName, suffix: ' loves cats!' });
+xhr.send(body);
+You've seen several of these methods before. Here the open method initializes the request as a POST to the given URL of the external resource, and passes true as the third parameter - indicating to perform the operation asynchronously.
+
+The setRequestHeader method sets the value of an HTTP request header, which contains information about the sender and the request. It must be called after the open method, but before the send method. The two parameters are the name of the header and the value to set as the body of that header.
+
+Next, the onreadystatechange event listener handles a change in the state of the request. A readyState of 4 means the operation is complete, and a status of 201 means it was a successful request. Therefore, the document's HTML can be updated.
+
+Finally, the send method sends the request with the body value. The body consists of a userName and a suffix key.
+
+Update the code so it makes a POST request to the API endpoint. Then type your name in the input field and click Send Message. Your AJAX function should replace Reply from Server will be here. with data from the server. Format the response to display your name appended with the text  loves cats.
+
